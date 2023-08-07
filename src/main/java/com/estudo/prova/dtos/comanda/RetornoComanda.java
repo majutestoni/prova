@@ -1,4 +1,4 @@
-package com.estudo.prova.dtos.usuario;
+package com.estudo.prova.dtos.comanda;
 
 import com.estudo.prova.entities.Comanda;
 import com.estudo.prova.entities.Produto;
