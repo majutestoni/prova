@@ -6,6 +6,7 @@ import com.estudo.prova.dtos.comanda.RetornoComanda;
 import com.estudo.prova.entities.Comanda;
 import com.estudo.prova.entities.Produto;
 import com.estudo.prova.entities.Usuario;
+import com.estudo.prova.exception.ConflitedException;
 import com.estudo.prova.exception.ExceptionHandlerAdvice;
 import com.estudo.prova.exception.MessageDto;
 import com.estudo.prova.repositories.ComandaRepository;
@@ -39,13 +40,17 @@ public class ComandaController {
     public ResponseEntity<RetornoComanda> novaComanda(@Validated @RequestBody NovaComanda comanda) {
         Comanda nova = new Comanda();
         Usuario u = usuarioRepository.getOne(comanda.getIdUsuario());
-        if (u.getId() == null) {
-// implementar retorno
+        if (u == null) {
+            throw new ConflitedException("É necessario informar um usuario valido!");
         }
         nova.setUsuario(u);
         Set<Produto> produtos = new HashSet<>();
         for (Produto produtoId : comanda.getProdutos()) {
-            Produto produto = produtoRepository.findById(produtoId.getId()).orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + produtoId));
+            Produto produto = produtoRepository.getOne(produtoId.getId());
+            if (produto == null) {
+                new ConflitedException("É necessario informar um produto valido!");
+            }
+
             produtos.add(produto);
         }
         nova.setProdutos(produtos);
@@ -59,6 +64,10 @@ public class ComandaController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<RetornoComanda> getComanda(@PathVariable Long id) {
         Comanda c = comandaRepository.getOne(id);
+
+        if (c == null) {
+            throw new ConflitedException("É necessario informar uma comanda valido!");
+        }
         RetornoComanda dto = new RetornoComanda(c);
         return ResponseEntity.ok().body(dto);
     }
@@ -74,15 +83,16 @@ public class ComandaController {
     public ResponseEntity<RetornoDto> atualizarComanda(@PathVariable Long id, @RequestBody RetornoComanda comanda) {
         Comanda comandaAtualizar = comandaRepository.getOne(id);
 
-        if (comandaAtualizar.getId() == null) {
-            // retorna erro
+        if (comandaAtualizar == null) {
+            throw new ConflitedException("É necessario informar uma comanda valido!");
         }
 
         if (comanda.getProdutos().size() > 0) {
-
-            comandaAtualizar.getProdutos().clear();
             for (Produto p : comanda.getProdutos()) {
-                Produto produto = produtoRepository.findById(p.getId()).orElseThrow(() -> new EntityNotFoundException("Produto não encontrado com ID: " + p));
+                Produto produto = produtoRepository.getOne(p.getId());
+                if (produto == null) {
+                    new ConflitedException("É necessario informar um produto valido!");
+                }
                 comandaAtualizar.getProdutos().add(produto);
             }
         }
@@ -90,14 +100,14 @@ public class ComandaController {
         if (comanda.getIdUsuario() != null) {
             Usuario u = usuarioRepository.getOne(comanda.getIdUsuario());
 
-            if (u.getId() == null) {
-                // retorna erro
+            if (u == null) {
+                new ConflitedException("É necessario informar um usuario valido!");
             }
 
             comandaAtualizar.setUsuario(u);
         }
 
-        if(comanda.getTelefoneUsuario() != null){
+        if (comanda.getTelefoneUsuario() != null) {
             Usuario u = usuarioRepository.getOne(comandaAtualizar.getUsuario().getId());
             u.setTelefoneUsuario(comanda.getTelefoneUsuario());
             usuarioRepository.save(u);
@@ -111,13 +121,16 @@ public class ComandaController {
         return ResponseEntity.ok(new RetornoDto("Atualizado com sucesso"));
 
 
-
     }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<RetornoDto> deletarComanda(@PathVariable Long id) {
 
         Comanda comanda = comandaRepository.getOne(id);
+
+        if (comanda == null) {
+            throw new ConflitedException("É necessario informar uma comanda valido!");
+        }
         comandaRepository.delete(comanda);
         return ResponseEntity.ok().body(new RetornoDto("Deletado com sucesso"));
 
