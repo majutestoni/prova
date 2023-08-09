@@ -1,18 +1,27 @@
 package com.estudo.prova.configuration;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
+@SecurityScheme(
+        name = "Bearer Authorization",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SwaggerConfiguration {
     @Bean
-    public Docket docket() {
-        return new Docket(DocumentationType.SWAGGER_2).select().apis(RequestHandlerSelectors.any()).paths(PathSelectors.any()).build();
+    public OpenAPI docket() {
+        return new OpenAPI().info(new Info().description("Primeiro, não esqueça de criar seu usuario e fazer login com ele, na parte de usuario-controller").title("Sistema de comandas"));
     }
+
+
+
 
 
 }

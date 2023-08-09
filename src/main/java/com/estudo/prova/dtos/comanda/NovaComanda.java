@@ -1,14 +1,9 @@
 package com.estudo.prova.dtos.comanda;
 
 import com.estudo.prova.entities.Produto;
-import com.estudo.prova.exception.ExceptionHandlerAdvice;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
@@ -16,8 +11,7 @@ import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class NovaComanda {
 
     @NotNull(message = "Obrigatorio informar o usuario!")

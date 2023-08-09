@@ -2,6 +2,8 @@ package com.estudo.prova.controllers;
 
 import com.estudo.prova.dtos.RetornoDto;
 import com.estudo.prova.dtos.comanda.NovaComanda;
+import com.estudo.prova.dtos.comanda.ProdutoRetorno;
+import com.estudo.prova.dtos.comanda.RertonoComandaGet;
 import com.estudo.prova.dtos.comanda.RetornoComanda;
 import com.estudo.prova.entities.Comanda;
 import com.estudo.prova.entities.Produto;
@@ -12,19 +14,23 @@ import com.estudo.prova.exception.MessageDto;
 import com.estudo.prova.repositories.ComandaRepository;
 import com.estudo.prova.repositories.ProdutoRepository;
 import com.estudo.prova.repositories.UsuarioRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/comandas")
+@SecurityRequirement(name = "Bearer Authorization")
 public class ComandaController {
 
     @Autowired
@@ -73,10 +79,17 @@ public class ComandaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> getComandas() {
-        List<Usuario> usuarios = usuarioRepository.findAll();
+    public ResponseEntity<List<RertonoComandaGet>> getComandas() {
+        List<Comanda> comandas = comandaRepository.findAll();
 
-        return ResponseEntity.ok().body(usuarios);
+        List<RertonoComandaGet> retorno = new ArrayList<>();
+
+        comandas.forEach(c -> {
+            retorno.add(new RertonoComandaGet(c));
+        });
+
+
+        return ResponseEntity.ok().body(retorno);
     }
 
     @PutMapping(value = "/{id}")
@@ -88,7 +101,7 @@ public class ComandaController {
         }
 
         if (comanda.getProdutos().size() > 0) {
-            for (Produto p : comanda.getProdutos()) {
+            for (ProdutoRetorno p : comanda.getProdutos()) {
                 Produto produto = produtoRepository.getOne(p.getId());
                 if (produto == null) {
                     new ConflitedException("É necessario informar um produto valido!");

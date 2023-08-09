@@ -1,16 +1,11 @@
 package com.estudo.prova.dtos.comanda;
 
 import com.estudo.prova.entities.Comanda;
-import com.estudo.prova.entities.Produto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class RetornoComanda {
@@ -18,7 +13,8 @@ public class RetornoComanda {
     private Long idUsuario;
     private String nomeUsuario;
     private String telefoneUsuario;
-    private ArrayList<Produto> produtos = new ArrayList<>();
+    private double totalComanda = 0;
+    private ArrayList<ProdutoRetorno> produtos = new ArrayList<>();
 
     public RetornoComanda(Comanda p) {
 
@@ -27,9 +23,12 @@ public class RetornoComanda {
         setNomeUsuario(p.getUsuario().getNome());
         setTelefoneUsuario(p.getUsuario().getTelefoneUsuario());
 
-        p.getProdutos().forEach(e -> {
-            this.produtos.add(e);
+
+        p.getProdutos().forEach(produto -> {
+            this.totalComanda += produto.getPreco();
+            this.produtos.add(new ProdutoRetorno(produto));
         });
+
 
 
     }

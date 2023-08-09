@@ -15,13 +15,11 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import java.util.Collections;
 
@@ -41,6 +39,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    private static final String[] PUBLIC_MATCHERS = { //
+            "/swagger-ui/**", //
+            "/swagger-ui.html", //
+            "/v3/**",
+            "/webjars/**",
+            "/swagger-resources/**",
+            "/v2/**"
+    };
+
+
 
 
     @Override
@@ -50,10 +58,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(PUBLIC_MATCHERS);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.cors().and().csrf().disable();
         http.authorizeRequests()
+                .antMatchers( PUBLIC_MATCHERS).permitAll()
                 .antMatchers(HttpMethod.POST, "/usuario", "/usuario/login").permitAll()
                 .anyRequest().authenticated()
                 .and().csrf().disable()
@@ -64,5 +78,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(authenticationService).passwordEncoder(bCryptPasswordEncoderConfig.bCryptPasswordEncoder());
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
+        configuration.setAllowedMethods(Collections.singletonList("*"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
+        configuration.setExposedHeaders(Collections.singletonList(HttpHeaders.ACCEPT));
+        configuration.setAllowCredentials(false);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
