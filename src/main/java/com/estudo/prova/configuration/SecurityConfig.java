@@ -39,13 +39,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    // libera acesso a visualização do swagger na web (sem dar 403)
     private static final String[] PUBLIC_MATCHERS = { //
             "/swagger-ui/**", //
             "/swagger-ui.html", //
-            "/v3/**",
-            "/webjars/**",
-            "/swagger-resources/**",
-            "/v2/**"
+            "/v3/**"
     };
 
 

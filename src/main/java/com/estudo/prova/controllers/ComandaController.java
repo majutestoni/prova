@@ -1,10 +1,7 @@
 package com.estudo.prova.controllers;
 
 import com.estudo.prova.dtos.RetornoDto;
-import com.estudo.prova.dtos.comanda.NovaComanda;
-import com.estudo.prova.dtos.comanda.ProdutoRetorno;
-import com.estudo.prova.dtos.comanda.RertonoComandaGet;
-import com.estudo.prova.dtos.comanda.RetornoComanda;
+import com.estudo.prova.dtos.comanda.*;
 import com.estudo.prova.entities.Comanda;
 import com.estudo.prova.entities.Produto;
 import com.estudo.prova.entities.Usuario;
@@ -93,7 +90,7 @@ public class ComandaController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<RetornoDto> atualizarComanda(@PathVariable Long id, @RequestBody RetornoComanda comanda) {
+    public ResponseEntity<RetornoDto> atualizarComanda(@PathVariable Long id, @RequestBody EditarComanda comanda) {
         Comanda comandaAtualizar = comandaRepository.getOne(id);
 
         if (comandaAtualizar == null) {
@@ -120,18 +117,9 @@ public class ComandaController {
             comandaAtualizar.setUsuario(u);
         }
 
-        if (comanda.getTelefoneUsuario() != null) {
-            Usuario u = usuarioRepository.getOne(comandaAtualizar.getUsuario().getId());
-            u.setTelefoneUsuario(comanda.getTelefoneUsuario());
-            usuarioRepository.save(u);
-            comandaAtualizar.setUsuario(u);
-
-        }
-
-
         comandaRepository.save(comandaAtualizar);
 
-        return ResponseEntity.ok(new RetornoDto("Atualizado com sucesso"));
+        return ResponseEntity.ok(new RetornoDto("Atualizado com sucesso!"));
 
 
     }
@@ -145,7 +133,7 @@ public class ComandaController {
             throw new ConflitedException("É necessario informar uma comanda valido!");
         }
         comandaRepository.delete(comanda);
-        return ResponseEntity.ok().body(new RetornoDto("Deletado com sucesso"));
+        return ResponseEntity.ok().body(new RetornoDto("Deletado com sucesso!"));
 
     }
 

@@ -13,6 +13,7 @@ public class RetornoComanda {
     private Long idUsuario;
     private String nomeUsuario;
     private String telefoneUsuario;
+    // deve retornar o valor total da comanda
     private double totalComanda = 0;
     private ArrayList<ProdutoRetorno> produtos = new ArrayList<>();
 

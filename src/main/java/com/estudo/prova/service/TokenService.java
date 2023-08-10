@@ -26,7 +26,6 @@ public class TokenService {
 
         Date currentDate = new Date(System.currentTimeMillis());
         Date expirationDate = new Date(currentDate.getTime() + expiration * 1000);
-//        return Jwts.builder().setIssuer("Prova").setSubject(usuario.getUsername()).claim("id", usuario.getId()).setExpiration(new Date(System.currentTimeMillis() + expiration)).signWith(SignatureAlgorithm.HS256, secret).compact();
         return Jwts.builder()
                 .setIssuer("Prova")
                 .setSubject(usuario.getUsername())
