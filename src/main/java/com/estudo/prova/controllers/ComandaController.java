@@ -2,24 +2,20 @@ package com.estudo.prova.controllers;
 
 import com.estudo.prova.dtos.RetornoDto;
 import com.estudo.prova.dtos.comanda.*;
+import com.estudo.prova.dtos.produto.ProdutoRetorno;
 import com.estudo.prova.entities.Comanda;
 import com.estudo.prova.entities.Produto;
 import com.estudo.prova.entities.Usuario;
 import com.estudo.prova.exception.ConflitedException;
-import com.estudo.prova.exception.ExceptionHandlerAdvice;
-import com.estudo.prova.exception.MessageDto;
 import com.estudo.prova.repositories.ComandaRepository;
 import com.estudo.prova.repositories.ProdutoRepository;
 import com.estudo.prova.repositories.UsuarioRepository;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

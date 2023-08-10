@@ -1,5 +1,6 @@
 package com.estudo.prova.dtos.comanda;
 
+import com.estudo.prova.dtos.produto.ProdutoRetorno;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
