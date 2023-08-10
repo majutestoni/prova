@@ -7,6 +7,7 @@ import com.estudo.prova.entities.Usuario;
 import com.estudo.prova.exception.ConflitedException;
 import com.estudo.prova.repositories.UsuarioRepository;
 import com.estudo.prova.service.TokenService;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -42,6 +43,7 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Operation(summary = "Criação de usuario", description = "Não inserir usuario com nomes iguais (tive a do atributo nome funcionar como user por causa do login)")
     @PostMapping
     public ResponseEntity<Usuario> createUser(@Validated @RequestBody NovoUsuario novoUsuario) {
         Usuario temp = usuarioRepository.findByNome(novoUsuario.getNome());
@@ -57,6 +59,7 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuarioRepository.save(usuario));
     }
 
+    @Operation(summary = "Realizar login", description = "Informar seu nome e senha, será retornardo Bearer token")
     @PostMapping(value = "/login")
     public ResponseEntity<TokenDto> login(@RequestBody @Validated LoginDto login) {
         Authentication authentication = new UsernamePasswordAuthenticationToken(login.getNome(), login.getSenha());

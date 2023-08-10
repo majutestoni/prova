@@ -5,6 +5,7 @@ import com.estudo.prova.dtos.produto.ProdutoRetorno;
 import com.estudo.prova.entities.Produto;
 import com.estudo.prova.exception.ConflitedException;
 import com.estudo.prova.repositories.ProdutoRepository;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ public class ProdutoController {
     @Autowired
     private ProdutoRepository produtoRepository;
 
+    @Operation(summary = "Criação de produto", description = "Informa nome e preco do produto, não podendo existir dois produtos com o mesmo nome")
     @PostMapping
     public ResponseEntity<ProdutoRetorno> criarProduto(@Validated @RequestBody CriaProduto recebido) {
 
@@ -40,6 +42,7 @@ public class ProdutoController {
         return ResponseEntity.ok(retorno);
     }
 
+    @Operation(summary = "Consultar produto", description = "Informe o id pera url e será retornado informações do produto")
     @GetMapping(value = "/{id}")
     public ResponseEntity<ProdutoRetorno> getProduto(Long id) {
         Produto produto = produtoRepository.getOne(id);
